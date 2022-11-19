@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using UnityEngine.XR.OpenXR.Input;
+using System;
 
 public class BattleUnitsManager : MonoBehaviour
 {
@@ -15,7 +16,11 @@ public class BattleUnitsManager : MonoBehaviour
 
 
     [SerializeField] private List<GamePieceToBattleUnit> Poles = new List<GamePieceToBattleUnit>();
+    public int PolesCount => Poles.Count;
     [SerializeField] private List<GamePieceToBattleUnit> Enemies = new List<GamePieceToBattleUnit>();
+    public int EnemiesCount => Enemies.Count;
+
+    public bool IsEndState => PolesCount <= 0 || EnemiesCount <= 0;
 
     private void OnEnable()
     {
@@ -34,32 +39,35 @@ public class BattleUnitsManager : MonoBehaviour
 
 
         //CreatePlayerGamePieces
-        foreach (var pole in poles) 
+        foreach (var pole in poles)
         {
-            var localPositionInBattleField = _battlefield.InverseTransformPoint(pole.transform.position);
-            localPositionInBattleField.y = 0;
-            localPositionInBattleField /= _battlefieldToBoardScale;
-
-            var polePiece = Instantiate(_polePieceToSpawn, _board);
-            polePiece.transform.localPosition = localPositionInBattleField;
-            polePiece.AssignBattleUnit(pole);
-            var polePieceToUnit = new GamePieceToBattleUnit(polePiece, pole);
-            Poles.Add(polePieceToUnit);
+            CreatePlayerGamePieces(pole, _polePieceToSpawn, Poles);
         }
 
         //CreateEnemyGamePieces
         foreach (var enemy in enemies)
         {
-            var localPositionInBattleField = _battlefield.InverseTransformPoint(enemy.transform.position);
-            localPositionInBattleField.y = 0;
-            localPositionInBattleField /= _battlefieldToBoardScale;
-
-            var enemyPiece = Instantiate(_enemyPieceToSpawn, _board);
-            enemyPiece.transform.localPosition = localPositionInBattleField;
-            enemyPiece.AssignBattleUnit(enemy);
-            var enemyPieceToUnit = new GamePieceToBattleUnit(enemyPiece, enemy);
-            Enemies.Add(enemyPieceToUnit);
+            CreatePlayerGamePieces(enemy, _enemyPieceToSpawn, Enemies);
         }
+    }
+
+    private void CreatePlayerGamePieces(BattleUnit unit, GamePiece pieceToSpawn, List<GamePieceToBattleUnit> pieceToUnits)
+    {
+        var localPositionInBattleField = _battlefield.InverseTransformPoint(unit.transform.position);
+        localPositionInBattleField.y = 0;
+        localPositionInBattleField /= _battlefieldToBoardScale;
+
+        var piece = Instantiate(_polePieceToSpawn, _board);
+        piece.transform.localPosition = localPositionInBattleField;
+        piece.AssignBattleUnit(unit);
+        var pieceToUnit = new GamePieceToBattleUnit(piece, unit);
+        pieceToUnits.Add(pieceToUnit);
+
+        unit.OnBattleUnitDestroyed += () =>
+        {
+            pieceToUnits.Remove(pieceToUnit);
+            Destroy(piece.gameObject);
+        };
     }
 }
 

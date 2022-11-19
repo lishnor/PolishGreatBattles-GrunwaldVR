@@ -17,7 +17,7 @@ RenderSettings:
   m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.01
+  m_FogDensity: 0.1
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -1542,6 +1542,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 49d5e5291d2ea2c43a373bf9c494daa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _battleUnitsManager: {fileID: 1046657326}
 --- !u!1 &1977315516
 GameObject:
   m_ObjectHideFlags: 0

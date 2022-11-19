@@ -25,6 +25,7 @@ public class BattleUnit : MonoBehaviour
     private float _radius = 1f;
 
     public UnityAction OnBattleUnitDestroyed;
+    public UnityAction<int> OnUpdateCount;
     public UnityAction OnBattleUnitMerged;
 
     private void OnEnable()
@@ -116,6 +117,8 @@ public class BattleUnit : MonoBehaviour
                 human.transform.position = _charactersContainer.transform.TransformPoint(pos);
             }
         }
+
+        OnUpdateCount?.Invoke(currentCount);
 
         UpdateVerticalPositioning();
     }
