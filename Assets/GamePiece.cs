@@ -7,6 +7,8 @@ public class GamePiece : MonoBehaviour
     [field: SerializeField] public BattleSide BattleSide { get; private set; }
     private BattleUnit _battleUnit;
 
+    
+
     public void AssignBattleUnit(BattleUnit battleUnit) 
     {
         _battleUnit = battleUnit;

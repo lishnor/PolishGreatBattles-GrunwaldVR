@@ -46,7 +46,9 @@ public class BattleUnit : MonoBehaviour
 
     private void Update()
     {
-        UpdatePositioning();
+        if (!IsUpdating) return;
+
+        UpdateVerticalPositioning();
     }
 
     private void OnDestroy()
@@ -54,7 +56,7 @@ public class BattleUnit : MonoBehaviour
         OnBattleUnitDestroyed?.Invoke();
     }
 
-    private void UpdatePositioning() 
+    private void UpdateVerticalPositioning() 
     {
         var pos = Vector3.zero;
 
@@ -62,9 +64,11 @@ public class BattleUnit : MonoBehaviour
         {
             pos = human.transform.position;
             pos.y = transform.position.y + 1f;
+            //Randomoffset for animation
+            var randomOffset = Mathf.PerlinNoise(pos.x * 5f, pos.z * 5f) * 0.05f + 0.5f;
             if(Physics.Raycast(pos, Vector3.down, out var hitInfo, 2f, _groundCheckLayermask))
             {
-                human.transform.position = hitInfo.point + Vector3.up * 0.5f;
+                human.transform.position = hitInfo.point + Vector3.up * randomOffset;
             }
         }
     }
@@ -113,7 +117,7 @@ public class BattleUnit : MonoBehaviour
             }
         }
 
-        UpdatePositioning();
+        UpdateVerticalPositioning();
     }
 
     public void AttackBattleUnits(BattleUnit other) 
