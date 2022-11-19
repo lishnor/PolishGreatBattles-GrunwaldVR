@@ -19,13 +19,14 @@ public class BattleUnit : MonoBehaviour
     [SerializeField] private GameObject _characterToSpawn;
     [SerializeField] protected GameObject _charactersContainer = null;
 
-    private List<GameObject> _people= new List<GameObject>();
+    private List<GameObject> _people = new List<GameObject>();
 
     private bool isPrerformingAction = false;
     private float _radius = 1f;
 
     public UnityAction OnBattleUnitDestroyed;
     public UnityAction<int> OnUpdateCount;
+    public UnityAction OnUpdatePosition;
     public UnityAction OnBattleUnitMerged;
 
     private void OnEnable()
@@ -37,9 +38,15 @@ public class BattleUnit : MonoBehaviour
         UpdatePeopleDistribution();
     }
 
-    private void DestroyAllSpawnedPeople() 
+    private void Start()
     {
-        foreach (Transform human in _charactersContainer.transform) 
+        UpdatePeopleDistribution();
+
+    }
+
+    private void DestroyAllSpawnedPeople()
+    {
+        foreach (Transform human in _charactersContainer.transform)
         {
             Destroy(human.gameObject);
         }
@@ -50,11 +57,24 @@ public class BattleUnit : MonoBehaviour
         if (!IsUpdating) return;
 
         UpdateVerticalPositioning();
+        OnUpdatePosition?.Invoke();
     }
 
     private void OnDestroy()
     {
         OnBattleUnitDestroyed?.Invoke();
+    }
+
+    public void ActivateObstacle()
+    {
+        _navAgent.enabled = false;
+        _navMeshObstacle.SetActive(true);
+    }
+
+    public void DeactivateObstacle()
+    {
+        _navMeshObstacle.SetActive(false);
+        _navAgent.enabled = true;
     }
 
     private void UpdateVerticalPositioning() 

@@ -112,6 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <BattleSide>k__BackingField: 0
+  _countDisplay: {fileID: 119940262492222142}
 --- !u!1 &2988380042876151677
 GameObject:
   m_ObjectHideFlags: 0

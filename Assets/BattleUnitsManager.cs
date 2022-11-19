@@ -57,9 +57,9 @@ public class BattleUnitsManager : MonoBehaviour
         localPositionInBattleField.y = 0;
         localPositionInBattleField /= _battlefieldToBoardScale;
 
-        var piece = Instantiate(_polePieceToSpawn, _board);
+        var piece = Instantiate(pieceToSpawn, _board);
         piece.transform.localPosition = localPositionInBattleField;
-        piece.AssignBattleUnit(unit);
+        piece.AssignBattleUnit(unit, _battlefield, _battlefieldToBoardScale);
         var pieceToUnit = new GamePieceToBattleUnit(piece, unit);
         pieceToUnits.Add(pieceToUnit);
 
@@ -68,6 +68,54 @@ public class BattleUnitsManager : MonoBehaviour
             pieceToUnits.Remove(pieceToUnit);
             Destroy(piece.gameObject);
         };
+    }
+
+    public IEnumerator EnemyMove() 
+    {
+        List<EnemyTargeting> enemyAndDisnance = new List<EnemyTargeting>();
+        foreach (var enemy in Enemies) 
+        {
+            var enemyTargeting = new EnemyTargeting() { Enemy = enemy };
+            var shortestDistance = Mathf.Infinity;
+            foreach (var pole in Poles) 
+            {
+                if (enemy.BattleUnit.PeopleCount > pole.BattleUnit.PeopleCount) 
+                {
+                    var distance = Vector3.Distance(enemy.BattleUnit.transform.position,pole.BattleUnit.transform.position);
+                    shortestDistance = distance < shortestDistance ? distance : shortestDistance;
+                    enemyTargeting.Pole= pole;
+                    enemyTargeting.distance = shortestDistance; 
+                }
+            }
+
+            enemyTargeting.Pole ??= Poles[0];
+            
+            enemyAndDisnance.Add(enemyTargeting);
+        }
+
+        enemyAndDisnance = enemyAndDisnance.OrderByDescending(x => x.distance).ToList();
+
+        var target = enemyAndDisnance[0];
+
+        for (int i = 1; i < enemyAndDisnance.Count; i++)
+        {
+            enemyAndDisnance[i].Enemy.BattleUnit.ActivateObstacle();
+        }
+
+        target.Enemy.BattleUnit.DeactivateObstacle();
+        target.Enemy.BattleUnit.MoveToPositon(target.Pole.BattleUnit.transform.position);
+
+        while (target.Enemy.BattleUnit.IsUpdating) 
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+    }
+
+    class EnemyTargeting 
+    {
+        public GamePieceToBattleUnit Enemy;
+        public GamePieceToBattleUnit Pole;
+        public float distance = Mathf.Infinity;
     }
 }
 
