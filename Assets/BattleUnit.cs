@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.XR.CoreUtils;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 public class BattleUnit : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class BattleUnit : MonoBehaviour
     private bool isPrerformingAction = false;
     private float _radius = 1f;
 
+    public UnityAction OnBattleUnitDestroyed;
+    public UnityAction OnBattleUnitMerged;
 
     private void OnEnable()
     {
@@ -44,6 +47,11 @@ public class BattleUnit : MonoBehaviour
     private void Update()
     {
         UpdatePositioning();
+    }
+
+    private void OnDestroy()
+    {
+        OnBattleUnitDestroyed?.Invoke();
     }
 
     private void UpdatePositioning() 
@@ -123,7 +131,8 @@ public class BattleUnit : MonoBehaviour
         {
             PeopleCount += other.PeopleCount;
             UpdatePeopleDistribution();
-            Destroy(other.gameObject);    
+            Destroy(other.gameObject);
+            OnBattleUnitMerged?.Invoke();
         }
     }
 
