@@ -80,7 +80,10 @@ public class BattleUnitsManager : MonoBehaviour
         unit.OnBattleUnitDestroyed += () =>
         {
             pieceToUnits.Remove(pieceToUnit);
-            Destroy(piece.gameObject);
+            if(piece!= null) 
+            {
+                Destroy(piece.gameObject);
+            }
         };
     }
 
@@ -154,6 +157,14 @@ public class BattleUnitsManager : MonoBehaviour
         while (target.Enemy.BattleUnit.IsUpdating) 
         {
             yield return new WaitForSeconds(0.1f);
+        }
+
+        for (int i = 0; i < enemyAndDisnance.Count; i++)
+        {
+            if (enemyAndDisnance[i].Enemy.BattleUnit != null) 
+            {
+                enemyAndDisnance[i].Enemy.BattleUnit.DeactivateObstacle();
+            }
         }
     }
 

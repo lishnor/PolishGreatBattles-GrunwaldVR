@@ -5,6 +5,7 @@ using TMPro;
 using System;
 using UnityEngine.Events;
 using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.InputSystem;
 
 public class GamePiece : MonoBehaviour
 {
@@ -23,7 +24,8 @@ public class GamePiece : MonoBehaviour
     private Transform _batlleField = null;
     private float _scale = 10f;
 
-    private Vector3 _startInteractionPosition = Vector3.zero; 
+    private Vector3 _startInteractionPosition = Vector3.zero;
+
 
     public void AssignBattleUnit(BattleUnit battleUnit, Transform battlefield, float scale) 
     {
@@ -44,15 +46,16 @@ public class GamePiece : MonoBehaviour
     }
 
     [ContextMenu("EndInteraction")]
-    private void DebugInteractionEnd() => StartInteracting(null);
+    private void DebugInteractionEnd() => StopInteracting(null);
 
     private void StopInteracting(SelectExitEventArgs arg0)
     {
+        DistanceCircle.Instance.DeactivateCircle();
         transform.localEulerAngles = Vector3.zero;
         var position = transform.localPosition;
         position.y = 0;
-        var offset = _startInteractionPosition - position;
-        offset = Vector3.ClampMagnitude(offset, 0.1f);
+        var offset = position - _startInteractionPosition;
+        offset = Vector3.ClampMagnitude(offset, 0.25f);
         transform.localPosition = _startInteractionPosition + offset;
         MovePiece();
     }
@@ -80,7 +83,7 @@ public class GamePiece : MonoBehaviour
 
     private void MovePieceAI()
     {
-         var localPos = _batlleField.InverseTransformPoint(_batlleField.position);
+         var localPos = _batlleField.InverseTransformPoint(_battleUnit.transform.position);
         localPos /= _scale;
         localPos.y = 0;
         transform.localPosition= localPos;
@@ -99,5 +102,6 @@ public class GamePiece : MonoBehaviour
         OnMoveEnded?.Invoke(_battleUnit);
         _battleUnit.MoveToPositon(targetPos);
         OnMoveCommandExecute?.Invoke();
+        Debug.Log("IAmhere");
     }
 }

@@ -113,6 +113,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   <BattleSide>k__BackingField: 0
   _countDisplay: {fileID: 8412271840152811541}
+  _isAIDriven: 1
+  <GrabInteractable>k__BackingField: {fileID: 0}
+  _rigidbody: {fileID: 0}
 --- !u!1 &6132650949322327970
 GameObject:
   m_ObjectHideFlags: 0
