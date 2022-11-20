@@ -17,7 +17,7 @@ public class DistanceCircle : MonoBehaviour
     public void ActivateCircle(Vector3 localPosition) 
     {
         var targetPos = localPosition;
-        targetPos.y = 0.001f;
+        targetPos.y = 0.01f;
         transform.localPosition = targetPos;
         _renderer.enabled = true;
     }

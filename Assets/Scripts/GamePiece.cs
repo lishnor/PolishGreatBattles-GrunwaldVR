@@ -21,6 +21,7 @@ public class GamePiece : MonoBehaviour
     public UnityAction<BattleUnit> OnMoveEnded;
     public UnityAction OnMoveCommandExecute;
 
+    private Transform _board;
     private Transform _batlleField = null;
     private float _scale = 10f;
 
@@ -29,6 +30,7 @@ public class GamePiece : MonoBehaviour
 
     public void AssignBattleUnit(BattleUnit battleUnit, Transform battlefield, float scale) 
     {
+        _board = transform.parent;
         _battleUnit = battleUnit;
         _battleUnit.OnUpdateCount += UpdateDisplay;
         _batlleField = battlefield;
@@ -50,6 +52,7 @@ public class GamePiece : MonoBehaviour
 
     private void StopInteracting(SelectExitEventArgs arg0)
     {
+        transform.parent = _board;
         DistanceCircle.Instance.DeactivateCircle();
         transform.localEulerAngles = Vector3.zero;
         var position = transform.localPosition;
