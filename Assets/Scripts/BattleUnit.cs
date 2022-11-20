@@ -68,7 +68,7 @@ public class BattleUnit : MonoBehaviour
 
     private void CheckForInteraction()
     {
-        var collidersCount = Physics.OverlapSphereNonAlloc(transform.position, 3f, _checkerBufor, _otherBattleUnitsLayerMask, QueryTriggerInteraction.Collide);
+        var collidersCount = Physics.OverlapSphereNonAlloc(transform.position, 3.5f, _checkerBufor, _otherBattleUnitsLayerMask, QueryTriggerInteraction.Collide);
         
         for (int i = 0; i < collidersCount; i++)
         {
@@ -142,7 +142,7 @@ public class BattleUnit : MonoBehaviour
             pos = human.transform.position;
             pos.y = transform.position.y + 3f;
             //Randomoffset for animation
-            var randomOffset = Mathf.PerlinNoise(pos.x * 5f, pos.z * 5f) * 0.02f + 0.75f;
+            var randomOffset = Mathf.PerlinNoise(pos.x * 5f, pos.z * 5f) * 0.05f + 0.75f;
             if(Physics.Raycast(pos, Vector3.down, out var hitInfo, 4f, _groundCheckLayermask))
             {
                 human.transform.position = hitInfo.point + Vector3.up * randomOffset;// randomOffset;

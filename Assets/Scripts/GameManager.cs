@@ -5,6 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private BattleUnitsManager _battleUnitsManager;
+    [SerializeField] GameObject _win;
+    [SerializeField] GameObject _loose;
 
     private void Start()
     {
@@ -61,12 +63,14 @@ public class GameManager : MonoBehaviour
 
     public IEnumerator Win() 
     {
+        _win.SetActive(true);
         Debug.Log("Win");
         yield return null;
     }
 
     public IEnumerator Loose() 
     {
+        _loose.SetActive(true);
         Debug.Log("Loose");
         yield return null;
     }

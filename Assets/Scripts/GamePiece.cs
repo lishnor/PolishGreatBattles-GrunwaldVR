@@ -55,7 +55,7 @@ public class GamePiece : MonoBehaviour
         transform.parent = _board;
         DistanceCircle.Instance.DeactivateCircle();
         transform.localEulerAngles = Vector3.zero;
-        var position = transform.localPosition;
+        var position = _board.InverseTransformPoint(transform.position);
         position.y = 0;
         var offset = position - _startInteractionPosition;
         offset = Vector3.ClampMagnitude(offset, 0.25f);
@@ -68,7 +68,7 @@ public class GamePiece : MonoBehaviour
 
     private void StartInteracting(SelectEnterEventArgs arg0)
     {
-        _startInteractionPosition = transform.localPosition;
+        _startInteractionPosition = _board.InverseTransformPoint(transform.position);
         DistanceCircle.Instance.ActivateCircle(_startInteractionPosition);
     }
 
