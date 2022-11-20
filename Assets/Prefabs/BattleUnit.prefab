@@ -66,7 +66,7 @@ Transform:
   - {fileID: 2789103666265136098}
   - {fileID: 2789103665648867082}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2789103666049823499
 MonoBehaviour:
@@ -81,7 +81,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <BattleSide>k__BackingField: 0
-  <PeopleCount>k__BackingField: 15
+  <PeopleCount>k__BackingField: 25
   _interactionRadius: 0.8
   _navMeshObstacle: {fileID: 2789103666265136101}
   _navAgent: {fileID: 2789103666049823498}
@@ -105,8 +105,8 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.8
-  m_Speed: 3.5
-  m_Acceleration: 8
+  m_Speed: 1
+  m_Acceleration: 2
   avoidancePriority: 50
   m_AngularSpeed: 120
   m_StoppingDistance: 0.1
