@@ -4,6 +4,7 @@ using UnityEngine;
 using TMPro;
 using System;
 using UnityEngine.Events;
+using UnityEngine.XR.Interaction.Toolkit;
 
 public class GamePiece : MonoBehaviour
 {
@@ -12,10 +13,17 @@ public class GamePiece : MonoBehaviour
 
     [SerializeField] private TMP_Text _countDisplay;
     [SerializeField] private bool _isAIDriven = false;
-    public UnityAction OnMoveEnded;
+    public bool IsAIDriven => _isAIDriven;
+
+    [field: SerializeField] public XRGrabInteractable GrabInteractable { get; private set; }
+    [SerializeField] private Rigidbody _rigidbody;
+    public UnityAction<BattleUnit> OnMoveEnded;
+    public UnityAction OnMoveCommandExecute;
 
     private Transform _batlleField = null;
     private float _scale = 10f;
+
+    private Vector3 _startInteractionPosition = Vector3.zero; 
 
     public void AssignBattleUnit(BattleUnit battleUnit, Transform battlefield, float scale) 
     {
@@ -28,6 +36,42 @@ public class GamePiece : MonoBehaviour
         {
             _battleUnit.OnUpdatePosition += MovePieceAI;
         }
+        else 
+        {
+            GrabInteractable?.selectEntered.AddListener(StartInteracting);
+            GrabInteractable?.selectExited.AddListener(StopInteracting);
+        }
+    }
+
+    [ContextMenu("EndInteraction")]
+    private void StopInteracting(SelectExitEventArgs arg0)
+    {
+        transform.localEulerAngles = Vector3.zero;
+        var position = transform.localPosition;
+        position.y = 0;
+        var offset = _startInteractionPosition - position;
+        offset = Vector3.ClampMagnitude(offset, 0.1f);
+        transform.localPosition = _startInteractionPosition + offset;
+        MovePiece();
+    }
+
+    [ContextMenu("StartInteraction")]
+    private void StartInteracting(SelectEnterEventArgs arg0)
+    {
+        _startInteractionPosition = transform.localPosition;
+        DistanceCircle.Instance.ActivateCircle(_startInteractionPosition);
+    }
+
+    public void LockInteractable() 
+    {
+        _rigidbody.isKinematic = true;
+        GrabInteractable.enabled = false;
+    }
+
+    public void UnlockInteractable() 
+    {
+        _rigidbody.isKinematic = false;
+        GrabInteractable.enabled = true;
     }
 
     private void MovePieceAI()
@@ -48,7 +92,13 @@ public class GamePiece : MonoBehaviour
         var targetPos = localPos * _scale;
         targetPos.y = 0;
         targetPos = _batlleField.TransformPoint(targetPos);
-        OnMoveEnded?.Invoke();
-        _battleUnit.MoveToPositon(targetPos);
+        OnMoveEnded?.Invoke(_battleUnit);
+        Invoke(nameof(DelayExecutuion), 0.5f);
+
+        void DelayExecutuion() 
+        {
+            _battleUnit.MoveToPositon(targetPos);
+            OnMoveCommandExecute?.Invoke();
+        }
     }
 }

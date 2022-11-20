@@ -14,7 +14,9 @@ public class BattleUnit : MonoBehaviour
     [SerializeField] private float _interactionRadius;
     [SerializeField] private GameObject _navMeshObstacle = null;
     [SerializeField] private NavMeshAgent _navAgent = null;
+    [SerializeField] private float _range = 5f;
 
+    [SerializeField] private LayerMask _otherBattleUnitsLayerMask;
     [SerializeField] private LayerMask _groundCheckLayermask;
     [SerializeField] private GameObject _characterToSpawn;
     [SerializeField] protected GameObject _charactersContainer = null;
@@ -23,6 +25,8 @@ public class BattleUnit : MonoBehaviour
 
     private bool isPrerformingAction = false;
     private float _radius = 1f;
+    private Vector3 _startMovingPosition = Vector3.zero;
+    private Collider[] _checkerBufor = new Collider[8];
 
     public UnityAction OnBattleUnitDestroyed;
     public UnityAction<int> OnUpdateCount;
@@ -56,8 +60,48 @@ public class BattleUnit : MonoBehaviour
     {
         if (!IsUpdating) return;
 
+        CheckForInteraction();
+        CheckDistanceTraveled();
         UpdateVerticalPositioning();
         OnUpdatePosition?.Invoke();
+    }
+
+    private void CheckForInteraction()
+    {
+        var collidersCount = Physics.OverlapSphereNonAlloc(transform.position, _radius, _checkerBufor, _otherBattleUnitsLayerMask, QueryTriggerInteraction.Collide);
+        
+        for (int i = 0; i < collidersCount; i++)
+        {
+            if (_checkerBufor[i].TryGetComponent<BattleUnit>(out var otherBattleUnit)) 
+            {
+                if (otherBattleUnit.BattleSide == BattleSide)
+                {
+                    MergeBattleUnits(otherBattleUnit);
+                }
+                else 
+                {
+                    AttackBattleUnits(otherBattleUnit);
+                }
+
+                break;
+            }
+        }
+        
+    }
+
+    private void CheckDistanceTraveled()
+    {
+        var traveledDistance = Vector3.Distance(transform.position, _startMovingPosition);
+        if (traveledDistance >= _range) 
+        {
+            StopAgent();
+        }
+    }
+
+    private void StopAgent() 
+    {
+        _navAgent.ResetPath();
+        _navAgent.isStopped = true;
     }
 
     private void OnDestroy()
@@ -149,6 +193,7 @@ public class BattleUnit : MonoBehaviour
         {
             PeopleCount = Mathf.Max(PeopleCount - other.PeopleCount, 0);
             UpdatePeopleDistribution();
+            StopAgent();
         }
     }
 
@@ -160,12 +205,14 @@ public class BattleUnit : MonoBehaviour
             UpdatePeopleDistribution();
             Destroy(other.gameObject);
             OnBattleUnitMerged?.Invoke();
+            StopAgent();
         }
     }
 
     public void MoveToPositon(Vector3 position) 
     {
         _navAgent.SetDestination(position);
+        _startMovingPosition = transform.position;
     }
 
 }

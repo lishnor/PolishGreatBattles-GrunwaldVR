@@ -39,12 +39,12 @@ public class GameManager : MonoBehaviour
     public IEnumerator PlayerTurn()
     {
         //UnlockInteractable
-
         //make move on board
         //wait for order
         //move people on board //if not destined to merge do not setup obstacle  except the one moving
-        //PlayEnemy turn //always obstacle except the one moving;
+
         Debug.Log("Player Turn");
+        yield return _battleUnitsManager.PlayerMove();
         yield return new WaitForSeconds(0.1f);
     }
 
@@ -54,17 +54,20 @@ public class GameManager : MonoBehaviour
         //Find distances between Crussaders and Poles
         //Find Strongest Army That exceds poles
         //Move that army to poles
+        //always obstacle except the one moving;
         yield return _battleUnitsManager.EnemyMove();
         yield return new WaitForSeconds(0.1f);
     }
 
     public IEnumerator Win() 
     {
+        Debug.Log("Win");
         yield return null;
     }
 
     public IEnumerator Loose() 
     {
+        Debug.Log("Loose");
         yield return null;
     }
 }

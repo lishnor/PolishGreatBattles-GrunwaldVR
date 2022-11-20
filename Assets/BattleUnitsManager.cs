@@ -4,6 +4,7 @@ using UnityEngine;
 using System.Linq;
 using UnityEngine.XR.OpenXR.Input;
 using System;
+using static UnityEngine.GraphicsBuffer;
 
 public class BattleUnitsManager : MonoBehaviour
 {
@@ -21,6 +22,9 @@ public class BattleUnitsManager : MonoBehaviour
     public int EnemiesCount => Enemies.Count;
 
     public bool IsEndState => PolesCount <= 0 || EnemiesCount <= 0;
+    private bool _playerMoveEnded = false;
+    private BattleUnit _currentMovingPlayerBattleUnit;
+    private bool _playerCommandSended = false;
 
     private void OnEnable()
     {
@@ -63,11 +67,52 @@ public class BattleUnitsManager : MonoBehaviour
         var pieceToUnit = new GamePieceToBattleUnit(piece, unit);
         pieceToUnits.Add(pieceToUnit);
 
+        if (!piece.IsAIDriven) 
+        {
+            piece.OnMoveEnded += ctx => 
+            {
+                _playerMoveEnded = true; 
+                
+            };
+            piece.OnMoveCommandExecute += () => _playerCommandSended = true;
+        }
+
         unit.OnBattleUnitDestroyed += () =>
         {
             pieceToUnits.Remove(pieceToUnit);
             Destroy(piece.gameObject);
         };
+    }
+
+    public IEnumerator PlayerMove() 
+    {
+        //UnlockInteractable
+        _playerMoveEnded = false;
+        foreach (var pole in Poles) 
+        {
+            pole.GamePiece.UnlockInteractable();
+        }
+        //make move on board
+        while (!_playerMoveEnded) 
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        foreach (var pole in Poles)
+        {
+            pole.GamePiece.LockInteractable();
+        }
+
+        //wait for order
+        while (!_playerCommandSended)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        while (_currentMovingPlayerBattleUnit.IsUpdating)
+        {
+            yield return new WaitForSeconds(0.1f);
+        }
     }
 
     public IEnumerator EnemyMove() 
