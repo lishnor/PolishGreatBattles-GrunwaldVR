@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!221 &22100000
+AnimatorOverrideController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LHand
+  m_Controller: {fileID: 9100000, guid: 06a1852e2b3ef7c47898e8cacf11e7fa, type: 2}
+  m_Clips:
+  - m_OriginalClip: {fileID: 1487166750395223977, guid: efa35d749b82b9b44a276adb279bc0d7,
+      type: 3}
+    m_OverrideClip: {fileID: -4909706384255960279, guid: 3fa6e483d76020947b11d891eff1b6f9,
+      type: 3}
+  - m_OriginalClip: {fileID: -6073498265120664251, guid: b631d3302246d2645946a625b9da3bf2,
+      type: 3}
+    m_OverrideClip: {fileID: -6073498265120664251, guid: f02d4f0381959d3478acc33f39fd8cb4,
+      type: 3}
