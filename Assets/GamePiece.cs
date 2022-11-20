@@ -44,6 +44,8 @@ public class GamePiece : MonoBehaviour
     }
 
     [ContextMenu("EndInteraction")]
+    private void DebugInteractionEnd() => StartInteracting(null);
+
     private void StopInteracting(SelectExitEventArgs arg0)
     {
         transform.localEulerAngles = Vector3.zero;
@@ -56,6 +58,8 @@ public class GamePiece : MonoBehaviour
     }
 
     [ContextMenu("StartInteraction")]
+    private void DebugInteractionStart() => StartInteracting(null);
+
     private void StartInteracting(SelectEnterEventArgs arg0)
     {
         _startInteractionPosition = transform.localPosition;
@@ -93,12 +97,7 @@ public class GamePiece : MonoBehaviour
         targetPos.y = 0;
         targetPos = _batlleField.TransformPoint(targetPos);
         OnMoveEnded?.Invoke(_battleUnit);
-        Invoke(nameof(DelayExecutuion), 0.5f);
-
-        void DelayExecutuion() 
-        {
-            _battleUnit.MoveToPositon(targetPos);
-            OnMoveCommandExecute?.Invoke();
-        }
+        _battleUnit.MoveToPositon(targetPos);
+        OnMoveCommandExecute?.Invoke();
     }
 }

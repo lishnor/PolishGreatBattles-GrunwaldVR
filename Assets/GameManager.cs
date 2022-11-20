@@ -8,7 +8,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        //StartCoroutine(TurnIterator());
+        StartCoroutine(TurnIterator());
     }
 
     public IEnumerator TurnIterator() 

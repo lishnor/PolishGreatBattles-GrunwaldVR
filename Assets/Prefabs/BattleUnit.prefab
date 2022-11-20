@@ -43,7 +43,8 @@ GameObject:
   - component: {fileID: 2789103666049823501}
   - component: {fileID: 2789103666049823499}
   - component: {fileID: 2789103666049823498}
-  m_Layer: 0
+  - component: {fileID: 8546884204529741044}
+  m_Layer: 7
   m_Name: BattleUnit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -65,7 +66,7 @@ Transform:
   - {fileID: 2789103666265136098}
   - {fileID: 2789103665648867082}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2789103666049823499
 MonoBehaviour:
@@ -84,6 +85,10 @@ MonoBehaviour:
   _interactionRadius: 0.8
   _navMeshObstacle: {fileID: 2789103666265136101}
   _navAgent: {fileID: 2789103666049823498}
+  _range: 5
+  _otherBattleUnitsLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
   _groundCheckLayermask:
     serializedVersion: 2
     m_Bits: 64
@@ -112,6 +117,19 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!135 &8546884204529741044
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2789103666049823500}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2789103666265136101
 GameObject:
   m_ObjectHideFlags: 0

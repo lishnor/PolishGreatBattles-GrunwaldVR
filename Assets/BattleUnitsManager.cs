@@ -71,8 +71,8 @@ public class BattleUnitsManager : MonoBehaviour
         {
             piece.OnMoveEnded += ctx => 
             {
-                _playerMoveEnded = true; 
-                
+                _playerMoveEnded = true;
+                _currentMovingPlayerBattleUnit = ctx;
             };
             piece.OnMoveCommandExecute += () => _playerCommandSended = true;
         }
@@ -95,6 +95,7 @@ public class BattleUnitsManager : MonoBehaviour
         //make move on board
         while (!_playerMoveEnded) 
         {
+            Debug.Log("PlayerMoveNotEnded");
             yield return new WaitForSeconds(0.1f);
         }
 
